@@ -131,6 +131,12 @@ public class GameServer : IGameServer
     }
 
     /// <inheritdoc />
+    public async ValueTask InitializeCashShopAsync(string playerName)
+    {
+        await this._client.InvokeMethodAsync(this._targetAppId, nameof(this.InitializeCashShopAsync), playerName).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
     public async ValueTask SendGlobalMessageAsync(string message, MessageType messageType)
     {
         await this._client.InvokeMethodAsync(this._targetAppId, nameof(this.SendGlobalMessageAsync), new MessageArguments(message, messageType)).ConfigureAwait(false);

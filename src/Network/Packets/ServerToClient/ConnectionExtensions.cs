@@ -4783,4 +4783,233 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopInit" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <remarks>
+    /// Is sent by the server when: Init cash shop.
+    /// Causes reaction on client side: Cash shop is inited.
+    /// </remarks>
+    public static async ValueTask SendCashShopInitAsync(this IConnection? connection)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopInitRef.Length;
+            var packet = new CashShopInitRef(connection.Output.GetSpan(length)[..length]);
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopPoint" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="viewType">The view type.</param>
+    /// <param name="totalCash">The total cash.</param>
+    /// <param name="cashCredit">The cash credit.</param>
+    /// <param name="cashPrepaid">The cash prepaid.</param>
+    /// <param name="totalPoint">The total point.</param>
+    /// <param name="totalMileage">The total mileage.</param>
+    /// <remarks>
+    /// Is sent by the server when: Get cash shop points.
+    /// Causes reaction on client side: Got cash shop points.
+    /// </remarks>
+    public static async ValueTask SendCashShopPointAsync(this IConnection? connection, byte @viewType, double @totalCash, double @cashCredit, double @cashPrepaid, double @totalPoint, double @totalMileage)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopPointRef.Length;
+            var packet = new CashShopPointRef(connection.Output.GetSpan(length)[..length]);
+            packet.ViewType = @viewType;
+            packet.TotalCash = @totalCash;
+            packet.CashCredit = @cashCredit;
+            packet.CashPrepaid = @cashPrepaid;
+            packet.TotalPoint = @totalPoint;
+            packet.TotalMileage = @totalMileage;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopOpen" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="result">The result.</param>
+    /// <remarks>
+    /// Is sent by the server when: Open cash shop.
+    /// Causes reaction on client side: Cash shop is opened.
+    /// </remarks>
+    public static async ValueTask SendCashShopOpenAsync(this IConnection? connection, byte @result)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopOpenRef.Length;
+            var packet = new CashShopOpenRef(connection.Output.GetSpan(length)[..length]);
+            packet.Result = @result;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopStorage" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="totalItemCount">The total item count.</param>
+    /// <param name="currentItemCount">The current item count.</param>
+    /// <param name="pageIndex">The page index.</param>
+    /// <param name="totalPage">The total page.</param>
+    /// <remarks>
+    /// Is sent by the server when: Get cash shop storage info.
+    /// Causes reaction on client side: Got cash shop storage info.
+    /// </remarks>
+    public static async ValueTask SendCashShopStorageAsync(this IConnection? connection, ushort @totalItemCount, ushort @currentItemCount, ushort @pageIndex, ushort @totalPage)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopStorageRef.Length;
+            var packet = new CashShopStorageRef(connection.Output.GetSpan(length)[..length]);
+            packet.TotalItemCount = @totalItemCount;
+            packet.CurrentItemCount = @currentItemCount;
+            packet.PageIndex = @pageIndex;
+            packet.TotalPage = @totalPage;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopScript" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="zone">The zone.</param>
+    /// <param name="year">The year.</param>
+    /// <param name="yearId">The year id.</param>
+    /// <remarks>
+    /// Is sent by the server when: Set cash shop script version.
+    /// Causes reaction on client side: Cash shop script version is set.
+    /// </remarks>
+    public static async ValueTask SendCashShopScriptAsync(this IConnection? connection, ushort @zone, ushort @year, ushort @yearId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopScriptRef.Length;
+            var packet = new CashShopScriptRef(connection.Output.GetSpan(length)[..length]);
+            packet.Zone = @zone;
+            packet.Year = @year;
+            packet.YearId = @yearId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopItem" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="storageIndex">The storage index.</param>
+    /// <param name="itemSeq">The item seq.</param>
+    /// <param name="storageGroupCode">The storage group code.</param>
+    /// <param name="productSeq">The product seq.</param>
+    /// <param name="priceSeq">The price seq.</param>
+    /// <param name="cashPoint">The cash point.</param>
+    /// <param name="itemType">The item type.</param>
+    /// <remarks>
+    /// Is sent by the server when: Get cash shop storage items.
+    /// Causes reaction on client side: Got cash shop storage items.
+    /// </remarks>
+    public static async ValueTask SendCashShopItemAsync(this IConnection? connection, uint @storageIndex, uint @itemSeq, uint @storageGroupCode, uint @productSeq, uint @priceSeq, double @cashPoint, byte @itemType)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopItemRef.Length;
+            var packet = new CashShopItemRef(connection.Output.GetSpan(length)[..length]);
+            packet.StorageIndex = @storageIndex;
+            packet.ItemSeq = @itemSeq;
+            packet.StorageGroupCode = @storageGroupCode;
+            packet.ProductSeq = @productSeq;
+            packet.PriceSeq = @priceSeq;
+            packet.CashPoint = @cashPoint;
+            packet.ItemType = @itemType;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopBanner" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="zone">The zone.</param>
+    /// <param name="year">The year.</param>
+    /// <param name="yearId">The year id.</param>
+    /// <remarks>
+    /// Is sent by the server when: Set cash shop banner version.
+    /// Causes reaction on client side: Cash shop banner version is set.
+    /// </remarks>
+    public static async ValueTask SendCashShopBannerAsync(this IConnection? connection, ushort @zone, ushort @year, ushort @yearId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopBannerRef.Length;
+            var packet = new CashShopBannerRef(connection.Output.GetSpan(length)[..length]);
+            packet.Zone = @zone;
+            packet.Year = @year;
+            packet.YearId = @yearId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

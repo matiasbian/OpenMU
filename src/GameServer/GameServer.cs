@@ -15,6 +15,7 @@ using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Views;
+using MUnique.OpenMU.GameLogic.Views.CashShop;
 using MUnique.OpenMU.GameLogic.Views.Guild;
 using MUnique.OpenMU.GameLogic.Views.Login;
 using MUnique.OpenMU.GameLogic.Views.Messenger;
@@ -343,6 +344,17 @@ public sealed class GameServer : IGameServer, IDisposable, IGameServerContextPro
         if (this._gameContext.GetPlayerByCharacterName(initializationData.PlayerName) is { } player)
         {
             await player.InvokeViewPlugInAsync<IInitializeMessengerPlugIn>(p => p.InitializeMessengerAsync(initializationData, this.Context.Configuration.MaximumLetters)).ConfigureAwait(false);
+        }
+    }
+
+    /// <inheritdoc/>
+    public async ValueTask InitializeCashShopAsync(string playerName)
+    {
+        if (this._gameContext.GetPlayerByCharacterName(playerName) is { } player)
+        {
+            await player.InvokeViewPlugInAsync<ICashShopInitPlugIn>(p => p.CashShopInitAsync()).ConfigureAwait(false);
+            await player.InvokeViewPlugInAsync<ICashShopScriptPlugIn>(p => p.CashShopScriptAsync(512, 2012, 84)).ConfigureAwait(false);
+            await player.InvokeViewPlugInAsync<ICashShopBannerPlugIn>(p => p.CashShopBannerAsync(583, 2011, 1)).ConfigureAwait(false);
         }
     }
 

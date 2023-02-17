@@ -32,6 +32,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<double>("GoblinCoin")
+                        .HasColumnType("double precision");
+
                     b.Property<bool>("IsVaultExtended")
                         .HasColumnType("boolean");
 
@@ -63,6 +66,12 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<string>("VaultPassword")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<double>("WCoinC")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("WCoinP")
+                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 

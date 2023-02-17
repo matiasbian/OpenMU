@@ -112,6 +112,21 @@ public class Account
     public bool IsVaultExtended { get; set; }
 
     /// <summary>
+    /// Gets or sets the W Coin (C).
+    /// </summary>
+    public double WCoinC { get; set; }
+
+    /// <summary>
+    /// Gets or sets the W Coin (P).
+    /// </summary>
+    public double WCoinP { get; set; }
+
+    /// <summary>
+    /// Gets or sets the Goblin Coin.
+    /// </summary>
+    public double GoblinCoin { get; set; }
+
+    /// <summary>
     /// Gets or sets the characters.
     /// </summary>
     [MemberOfAggregate]
