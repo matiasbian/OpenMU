@@ -51,6 +51,9 @@ public class MuHelper : AsyncDisposable
     /// </summary>
     public async ValueTask<bool> TryStartAsync()
     {
+        // Mati todo: Replace this with a more robust approach
+        return false;
+
         if (this._runTask is not null)
         {
             await this._player.ShowMessageAsync("MU Helper is already running.").ConfigureAwait(false);
