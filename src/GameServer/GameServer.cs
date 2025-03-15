@@ -351,6 +351,17 @@ public sealed class GameServer : IGameServer, IDisposable, IGameServerContextPro
     }
 
     /// <inheritdoc/>
+    public async ValueTask InitializeCashShopAsync(string playerName)
+    {
+        if (this._gameContext.GetPlayerByCharacterName(playerName) is { } player)
+        {
+            await player.InvokeViewPlugInAsync<ICashShopInitPlugIn>(p => p.CashShopInitAsync()).ConfigureAwait(false);
+            await player.InvokeViewPlugInAsync<ICashShopScriptPlugIn>(p => p.CashShopScriptAsync(512, 2012, 84)).ConfigureAwait(false);
+            await player.InvokeViewPlugInAsync<ICashShopBannerPlugIn>(p => p.CashShopBannerAsync(583, 2011, 1)).ConfigureAwait(false);
+        }
+    }
+
+    /// <inheritdoc/>
     public async ValueTask FriendOnlineStateChangedAsync(string player, string friend, int serverId)
     {
         if (this._gameContext.GetPlayerByCharacterName(player) is { } observerPlayer)
@@ -365,17 +376,6 @@ public sealed class GameServer : IGameServer, IDisposable, IGameServerContextPro
         if (this._gameContext.GetPlayerByCharacterName(initializationData.PlayerName) is { } player)
         {
             await player.InvokeViewPlugInAsync<IInitializeMessengerPlugIn>(p => p.InitializeMessengerAsync(initializationData, this.Context.Configuration.MaximumLetters)).ConfigureAwait(false);
-        }
-    }
-
-    /// <inheritdoc/>
-    public async ValueTask InitializeCashShopAsync(string playerName)
-    {
-        if (this._gameContext.GetPlayerByCharacterName(playerName) is { } player)
-        {
-            await player.InvokeViewPlugInAsync<ICashShopInitPlugIn>(p => p.CashShopInitAsync()).ConfigureAwait(false);
-            await player.InvokeViewPlugInAsync<ICashShopScriptPlugIn>(p => p.CashShopScriptAsync(512, 2012, 84)).ConfigureAwait(false);
-            await player.InvokeViewPlugInAsync<ICashShopBannerPlugIn>(p => p.CashShopBannerAsync(583, 2011, 1)).ConfigureAwait(false);
         }
     }
 
