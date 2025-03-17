@@ -30,6 +30,7 @@ public sealed class GameServerContainer : ServerContainerBase, IGameServerInstan
     private readonly IGuildServer _guildServer;
     private readonly ILoginServer _loginServer;
     private readonly IFriendServer _friendServer;
+    private readonly ICashShopServer _cashShopServer;
     private readonly IIpAddressResolver _ipResolver;
     private readonly PlugInManager _plugInManager;
     private readonly IConfigurationChangeMediator _changeMediator;
@@ -47,6 +48,7 @@ public sealed class GameServerContainer : ServerContainerBase, IGameServerInstan
     /// <param name="guildServer">The guild server.</param>
     /// <param name="loginServer">The login server.</param>
     /// <param name="friendServer">The friend server.</param>
+    /// <param name="cashShopServer">The cash shop server.</param>
     /// <param name="ipResolver">The ip resolver.</param>
     /// <param name="plugInManager">The plug in manager.</param>
     /// <param name="setupService">The setup service.</param>
@@ -60,6 +62,7 @@ public sealed class GameServerContainer : ServerContainerBase, IGameServerInstan
         IGuildServer guildServer,
         ILoginServer loginServer,
         IFriendServer friendServer,
+        ICashShopServer cashShopServer,
         IIpAddressResolver ipResolver,
         PlugInManager plugInManager,
         SetupService setupService,
@@ -74,12 +77,13 @@ public sealed class GameServerContainer : ServerContainerBase, IGameServerInstan
         this._guildServer = guildServer;
         this._loginServer = loginServer;
         this._friendServer = friendServer;
+        this._cashShopServer = cashShopServer;
         this._ipResolver = ipResolver;
         this._plugInManager = plugInManager;
         this._changeMediator = changeMediator;
 
         this._logger = this._loggerFactory.CreateLogger<GameServerContainer>();
-        this._eventPublisher = new InMemoryEventPublisher(this._gameServers, this._friendServer, this._guildServer);
+        this._eventPublisher = new InMemoryEventPublisher(this._gameServers, this._friendServer, this._guildServer, this._cashShopServer);
     }
 
     /// <inheritdoc />

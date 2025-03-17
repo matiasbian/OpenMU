@@ -38,7 +38,11 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<bool>("IsTemplate")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsVaultExtended")
+					b.Property<double>("GoblinCoin")
+						.HasColumnType("double precision");
+
+
+					b.Property<bool>("IsVaultExtended")
                         .HasColumnType("boolean");
 
                     b.Property<string>("LoginName")
@@ -60,7 +64,13 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<int>("State")
                         .HasColumnType("integer");
 
-                    b.Property<short>("TimeZone")
+					b.Property<double>("WCoinC")
+					  .HasColumnType("double precision");
+
+					b.Property<double>("WCoinP")
+						.HasColumnType("double precision");
+
+					b.Property<short>("TimeZone")
                         .HasColumnType("smallint");
 
                     b.Property<Guid?>("VaultId")

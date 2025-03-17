@@ -330,8 +330,13 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
     /// <inheritdoc/>
     public bool IsTeleporting { get; private set; }
 
-    /// <inheritdoc/>
-    public DeathInformation? LastDeath { get; private set; }
+	/// <summary>
+	/// Gets or sets a value indicating whether the cash shop is currently opened by the player.
+	/// </summary>
+	public bool IsCashShopOpened { get; set; }
+
+	/// <inheritdoc/>
+	public DeathInformation? LastDeath { get; private set; }
 
     /// <inheritdoc/>
     public Point Position
