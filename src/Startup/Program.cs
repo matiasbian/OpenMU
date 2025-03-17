@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MUnique.OpenMU.CashShopServer;
 using MUnique.OpenMU.ChatServer;
 using MUnique.OpenMU.ConnectServer;
 using MUnique.OpenMU.DataModel.Configuration;
@@ -256,6 +257,7 @@ internal sealed class Program : IDisposable
             .AddSingleton<ILoginServer, LoginServer>()
             .AddSingleton<IGuildServer, GuildServer>()
             .AddSingleton<IFriendServer, FriendServer>()
+            .AddSingleton<ICashShopServer, CashShopServer>()
             .AddSingleton<ChatServer>()
             .AddSingleton<IChatServer>(s => s.GetService<ChatServer>()!)
             .AddSingleton<ConnectServerFactory>()
@@ -268,6 +270,7 @@ internal sealed class Program : IDisposable
             .AddSingleton<IEnumerable<IConnectServer>>(provider => provider.GetService<ConnectServerContainer>() ?? throw new Exception($"{nameof(ConnectServerContainer)} not registered."))
             .AddSingleton<IGuildChangePublisher, GuildChangeToGameServerPublisher>()
             .AddSingleton<IFriendNotifier, FriendNotifierToGameServer>()
+            .AddSingleton<ICashShopNotifier, CashShopNotifier>()
             .AddSingleton<PlugInManager>()
             .AddSingleton<IServerProvider, LocalServerProvider>()
             .AddSingleton<ICollection<PlugInConfiguration>>(this.PlugInConfigurationsFactory)

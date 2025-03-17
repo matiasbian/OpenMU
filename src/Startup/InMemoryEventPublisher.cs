@@ -14,6 +14,7 @@ public class InMemoryEventPublisher : IEventPublisher
     private readonly IDictionary<int, IGameServer> _gameServers;
     private readonly IFriendServer _friendServer;
     private readonly IGuildServer _guildServer;
+    private readonly ICashShopServer _cashShopServer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InMemoryEventPublisher"/> class.
@@ -21,11 +22,13 @@ public class InMemoryEventPublisher : IEventPublisher
     /// <param name="gameServers">The game servers.</param>
     /// <param name="friendServer">The friend server.</param>
     /// <param name="guildServer">The guild server.</param>
-    public InMemoryEventPublisher(IDictionary<int, IGameServer> gameServers, IFriendServer friendServer, IGuildServer guildServer)
+    /// <param name="cashShopServer">The cash shop server.</param>
+    public InMemoryEventPublisher(IDictionary<int, IGameServer> gameServers, IFriendServer friendServer, IGuildServer guildServer, ICashShopServer cashShopServer)
     {
         this._gameServers = gameServers;
         this._friendServer = friendServer;
         this._guildServer = guildServer;
+        this._cashShopServer = cashShopServer;
     }
 
     /// <inheritdoc />
@@ -34,6 +37,8 @@ public class InMemoryEventPublisher : IEventPublisher
         await this._guildServer.PlayerEnteredGameAsync(characterId, characterName, serverId).ConfigureAwait(false);
 
         await this._friendServer.PlayerEnteredGameAsync(serverId, characterId, characterName).ConfigureAwait(false);
+
+        await this._cashShopServer.PlayerEnteredGameAsync(serverId, characterId, characterName).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

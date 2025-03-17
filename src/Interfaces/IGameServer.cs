@@ -59,7 +59,7 @@ public enum MessageType
 /// <summary>
 /// Interface for the inter-server communication.
 /// </summary>
-public interface IGameServer : IManageableServer, IFriendSystemSubscriber
+public interface IGameServer : IManageableServer, IFriendSystemSubscriber, ICashShopSubscriber
 {
     /// <summary>
     /// Sends a chat message to all connected guild members.
