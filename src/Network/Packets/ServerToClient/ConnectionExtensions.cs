@@ -5865,196 +5865,6 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
-    /// Sends a <see cref="UpdateMiniGameState" /> to this connection.
-    /// </summary>
-    /// <param name="connection">The connection.</param>
-    /// <param name="state">The state.</param>
-    /// <remarks>
-    /// Is sent by the server when: The state of a mini game event is about to change in 30 seconds.
-    /// Causes reaction on client side: The client side shows a message about the changing state.
-    /// </remarks>
-    public static async ValueTask SendUpdateMiniGameStateAsync(this IConnection? connection, UpdateMiniGameState.MiniGameTypeState @state)
-    {
-        if (connection is null)
-        {
-            return;
-        }
-
-        int WritePacket()
-        {
-            var length = UpdateMiniGameStateRef.Length;
-            var packet = new UpdateMiniGameStateRef(connection.Output.GetSpan(length)[..length]);
-            packet.State = @state;
-
-            return packet.Header.Length;
-        }
-
-        await connection.SendAsync(WritePacket).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Sends a <see cref="BloodCastleScore" /> to this connection.
-    /// </summary>
-    /// <param name="connection">The connection.</param>
-    /// <param name="success">The success.</param>
-    /// <param name="playerName">The player name.</param>
-    /// <param name="totalScore">The total score.</param>
-    /// <param name="bonusExperience">The bonus experience.</param>
-    /// <param name="bonusMoney">The bonus money.</param>
-    /// <param name="type">The type.</param>
-    /// <remarks>
-    /// Is sent by the server when: The blood castle mini game ended and the score of the player is sent to the player.
-    /// Causes reaction on client side: The score is shown at the client.
-    /// </remarks>
-    public static async ValueTask SendBloodCastleScoreAsync(this IConnection? connection, bool @success, string @playerName, uint @totalScore, uint @bonusExperience, uint @bonusMoney, byte @type = 0xFF)
-    {
-        if (connection is null)
-        {
-            return;
-        }
-
-        int WritePacket()
-        {
-            var length = BloodCastleScoreRef.Length;
-            var packet = new BloodCastleScoreRef(connection.Output.GetSpan(length)[..length]);
-            packet.Success = @success;
-            packet.Type = @type;
-            packet.PlayerName = @playerName;
-            packet.TotalScore = @totalScore;
-            packet.BonusExperience = @bonusExperience;
-            packet.BonusMoney = @bonusMoney;
-
-            return packet.Header.Length;
-        }
-
-        await connection.SendAsync(WritePacket).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Sends a <see cref="BloodCastleEnterResult" /> to this connection.
-    /// </summary>
-    /// <param name="connection">The connection.</param>
-    /// <param name="result">The result.</param>
-    /// <remarks>
-    /// Is sent by the server when: The player requested to enter the blood castle mini game through the Archangel Messenger NPC.
-    /// Causes reaction on client side: In case it failed, it shows the corresponding error message.
-    /// </remarks>
-    public static async ValueTask SendBloodCastleEnterResultAsync(this IConnection? connection, BloodCastleEnterResult.EnterResult @result)
-    {
-        if (connection is null)
-        {
-            return;
-        }
-
-        int WritePacket()
-        {
-            var length = BloodCastleEnterResultRef.Length;
-            var packet = new BloodCastleEnterResultRef(connection.Output.GetSpan(length)[..length]);
-            packet.Result = @result;
-
-            return packet.Header.Length;
-        }
-
-        await connection.SendAsync(WritePacket).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Sends a <see cref="BloodCastleState" /> to this connection.
-    /// </summary>
-    /// <param name="connection">The connection.</param>
-    /// <param name="state">The state.</param>
-    /// <param name="remainSecond">The remain second.</param>
-    /// <param name="maxMonster">The max monster.</param>
-    /// <param name="curMonster">The cur monster.</param>
-    /// <param name="itemOwnerId">The item owner id.</param>
-    /// <param name="itemLevel">The item level.</param>
-    /// <remarks>
-    /// Is sent by the server when: The state of a blood castle event is about to change.
-    /// Causes reaction on client side: The client side shows a message about the changing state.
-    /// </remarks>
-    public static async ValueTask SendBloodCastleStateAsync(this IConnection? connection, BloodCastleState.Status @state, ushort @remainSecond, ushort @maxMonster, ushort @curMonster, ushort @itemOwnerId, byte @itemLevel)
-    {
-        if (connection is null)
-        {
-            return;
-        }
-
-        int WritePacket()
-        {
-            var length = BloodCastleStateRef.Length;
-            var packet = new BloodCastleStateRef(connection.Output.GetSpan(length)[..length]);
-            packet.State = @state;
-            packet.RemainSecond = @remainSecond;
-            packet.MaxMonster = @maxMonster;
-            packet.CurMonster = @curMonster;
-            packet.ItemOwnerId = @itemOwnerId;
-            packet.ItemLevel = @itemLevel;
-
-            return packet.Header.Length;
-        }
-
-        await connection.SendAsync(WritePacket).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Sends a <see cref="ChaosCastleEnterResult" /> to this connection.
-    /// </summary>
-    /// <param name="connection">The connection.</param>
-    /// <param name="result">The result.</param>
-    /// <remarks>
-    /// Is sent by the server when: The player requested to enter the chaos castle mini game by using the 'Armor of Guardsman' item.
-    /// Causes reaction on client side: In case it failed, it shows the corresponding error message.
-    /// </remarks>
-    public static async ValueTask SendChaosCastleEnterResultAsync(this IConnection? connection, ChaosCastleEnterResult.EnterResult @result)
-    {
-        if (connection is null)
-        {
-            return;
-        }
-
-        int WritePacket()
-        {
-            var length = ChaosCastleEnterResultRef.Length;
-            var packet = new ChaosCastleEnterResultRef(connection.Output.GetSpan(length)[..length]);
-            packet.Result = @result;
-
-            return packet.Header.Length;
-        }
-
-        await connection.SendAsync(WritePacket).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Sends a <see cref="MapEventState" /> to this connection.
-    /// </summary>
-    /// <param name="connection">The connection.</param>
-    /// <param name="enable">The enable.</param>
-    /// <param name="event">The event.</param>
-    /// <remarks>
-    /// Is sent by the server when: The state of event is about to change.
-    /// Causes reaction on client side: The event's effect is shown.
-    /// </remarks>
-    public static async ValueTask SendMapEventStateAsync(this IConnection? connection, bool @enable, MapEventState.Events @event)
-    {
-        if (connection is null)
-        {
-            return;
-        }
-
-        int WritePacket()
-        {
-            var length = MapEventStateRef.Length;
-            var packet = new MapEventStateRef(connection.Output.GetSpan(length)[..length]);
-            packet.Enable = @enable;
-            packet.Event = @event;
-
-            return packet.Header.Length;
-        }
-
-        await connection.SendAsync(WritePacket).ConfigureAwait(false);
-    }
-
-    /// <summary>
     /// Sends a <see cref="CashShopInit" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>
@@ -6276,6 +6086,196 @@ public static class ConnectionExtensions
             packet.Zone = @zone;
             packet.Year = @year;
             packet.YearId = @yearId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="UpdateMiniGameState" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="state">The state.</param>
+    /// <remarks>
+    /// Is sent by the server when: The state of a mini game event is about to change in 30 seconds.
+    /// Causes reaction on client side: The client side shows a message about the changing state.
+    /// </remarks>
+    public static async ValueTask SendUpdateMiniGameStateAsync(this IConnection? connection, UpdateMiniGameState.MiniGameTypeState @state)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = UpdateMiniGameStateRef.Length;
+            var packet = new UpdateMiniGameStateRef(connection.Output.GetSpan(length)[..length]);
+            packet.State = @state;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="BloodCastleScore" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="success">The success.</param>
+    /// <param name="playerName">The player name.</param>
+    /// <param name="totalScore">The total score.</param>
+    /// <param name="bonusExperience">The bonus experience.</param>
+    /// <param name="bonusMoney">The bonus money.</param>
+    /// <param name="type">The type.</param>
+    /// <remarks>
+    /// Is sent by the server when: The blood castle mini game ended and the score of the player is sent to the player.
+    /// Causes reaction on client side: The score is shown at the client.
+    /// </remarks>
+    public static async ValueTask SendBloodCastleScoreAsync(this IConnection? connection, bool @success, string @playerName, uint @totalScore, uint @bonusExperience, uint @bonusMoney, byte @type = 0xFF)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = BloodCastleScoreRef.Length;
+            var packet = new BloodCastleScoreRef(connection.Output.GetSpan(length)[..length]);
+            packet.Success = @success;
+            packet.Type = @type;
+            packet.PlayerName = @playerName;
+            packet.TotalScore = @totalScore;
+            packet.BonusExperience = @bonusExperience;
+            packet.BonusMoney = @bonusMoney;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="BloodCastleEnterResult" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="result">The result.</param>
+    /// <remarks>
+    /// Is sent by the server when: The player requested to enter the blood castle mini game through the Archangel Messenger NPC.
+    /// Causes reaction on client side: In case it failed, it shows the corresponding error message.
+    /// </remarks>
+    public static async ValueTask SendBloodCastleEnterResultAsync(this IConnection? connection, BloodCastleEnterResult.EnterResult @result)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = BloodCastleEnterResultRef.Length;
+            var packet = new BloodCastleEnterResultRef(connection.Output.GetSpan(length)[..length]);
+            packet.Result = @result;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="BloodCastleState" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="state">The state.</param>
+    /// <param name="remainSecond">The remain second.</param>
+    /// <param name="maxMonster">The max monster.</param>
+    /// <param name="curMonster">The cur monster.</param>
+    /// <param name="itemOwnerId">The item owner id.</param>
+    /// <param name="itemLevel">The item level.</param>
+    /// <remarks>
+    /// Is sent by the server when: The state of a blood castle event is about to change.
+    /// Causes reaction on client side: The client side shows a message about the changing state.
+    /// </remarks>
+    public static async ValueTask SendBloodCastleStateAsync(this IConnection? connection, BloodCastleState.Status @state, ushort @remainSecond, ushort @maxMonster, ushort @curMonster, ushort @itemOwnerId, byte @itemLevel)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = BloodCastleStateRef.Length;
+            var packet = new BloodCastleStateRef(connection.Output.GetSpan(length)[..length]);
+            packet.State = @state;
+            packet.RemainSecond = @remainSecond;
+            packet.MaxMonster = @maxMonster;
+            packet.CurMonster = @curMonster;
+            packet.ItemOwnerId = @itemOwnerId;
+            packet.ItemLevel = @itemLevel;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="ChaosCastleEnterResult" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="result">The result.</param>
+    /// <remarks>
+    /// Is sent by the server when: The player requested to enter the chaos castle mini game by using the 'Armor of Guardsman' item.
+    /// Causes reaction on client side: In case it failed, it shows the corresponding error message.
+    /// </remarks>
+    public static async ValueTask SendChaosCastleEnterResultAsync(this IConnection? connection, ChaosCastleEnterResult.EnterResult @result)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = ChaosCastleEnterResultRef.Length;
+            var packet = new ChaosCastleEnterResultRef(connection.Output.GetSpan(length)[..length]);
+            packet.Result = @result;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="MapEventState" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="enable">The enable.</param>
+    /// <param name="event">The event.</param>
+    /// <remarks>
+    /// Is sent by the server when: The state of event is about to change.
+    /// Causes reaction on client side: The event's effect is shown.
+    /// </remarks>
+    public static async ValueTask SendMapEventStateAsync(this IConnection? connection, bool @enable, MapEventState.Events @event)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = MapEventStateRef.Length;
+            var packet = new MapEventStateRef(connection.Output.GetSpan(length)[..length]);
+            packet.Enable = @enable;
+            packet.Event = @event;
 
             return packet.Header.Length;
         }

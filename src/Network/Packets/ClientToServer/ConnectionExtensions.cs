@@ -5547,4 +5547,86 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopPoint" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <remarks>
+    /// Is sent by the client when: Get cash shop points.
+    /// Causes reaction on server side: Got cash shop points.
+    /// </remarks>
+    public static async ValueTask SendCashShopPointAsync(this IConnection? connection)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopPointRef.Length;
+            var packet = new CashShopPointRef(connection.Output.GetSpan(length)[..length]);
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopOpen" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <remarks>
+    /// Is sent by the client when: The player wants to open cash shop.
+    /// Causes reaction on server side: The cash shop is opened.
+    /// </remarks>
+    public static async ValueTask SendCashShopOpenAsync(this IConnection? connection)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopOpenRef.Length;
+            var packet = new CashShopOpenRef(connection.Output.GetSpan(length)[..length]);
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopStorage" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="page">The page.</param>
+    /// <param name="storageType">The storage type.</param>
+    /// <param name="unk">The unk.</param>
+    /// <remarks>
+    /// Is sent by the client when: Get cash shop storage info.
+    /// Causes reaction on server side: Got cash shop storage info.
+    /// </remarks>
+    public static async ValueTask SendCashShopStorageAsync(this IConnection? connection, uint @page, CashShopStorageType @storageType, byte @unk)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopStorageRef.Length;
+            var packet = new CashShopStorageRef(connection.Output.GetSpan(length)[..length]);
+            packet.Page = @page;
+            packet.StorageType = @storageType;
+            packet.Unk = @unk;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

@@ -4251,7 +4251,6 @@
       <Fields>
       </Fields>
     </Packet>
-  </Packets>
   <Packet>
     <HeaderType>C1HeaderWithSubCode</HeaderType>
     <Code>D2</Code>

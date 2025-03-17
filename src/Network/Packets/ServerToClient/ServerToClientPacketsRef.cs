@@ -27332,741 +27332,6 @@ public readonly ref struct MiniGameOpeningStateRef
 
 
 /// <summary>
-/// Is sent by the server when: The state of a mini game event is about to change in 30 seconds.
-/// Causes reaction on client side: The client side shows a message about the changing state.
-/// </summary>
-public readonly ref struct UpdateMiniGameStateRef
-{
-    private readonly Span<byte> _data;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UpdateMiniGameStateRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    public UpdateMiniGameStateRef(Span<byte> data)
-        : this(data, true)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UpdateMiniGameStateRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
-    private UpdateMiniGameStateRef(Span<byte> data, bool initialize)
-    {
-        this._data = data;
-        if (initialize)
-        {
-            var header = this.Header;
-            header.Type = HeaderType;
-            header.Code = Code;
-            header.Length = (byte)Math.Min(data.Length, Length);
-        }
-    }
-
-    /// <summary>
-    /// Gets the header type of this data packet.
-    /// </summary>
-    public static byte HeaderType => 0xC1;
-
-    /// <summary>
-    /// Gets the operation code of this data packet.
-    /// </summary>
-    public static byte Code => 0x92;
-
-    /// <summary>
-    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
-    /// </summary>
-    public static int Length => 4;
-
-    /// <summary>
-    /// Gets the header of this packet.
-    /// </summary>
-    public C1HeaderRef Header => new (this._data);
-
-    /// <summary>
-    /// Gets or sets the state.
-    /// </summary>
-    public UpdateMiniGameState.MiniGameTypeState State
-    {
-        get => (UpdateMiniGameState.MiniGameTypeState)this._data[3];
-        set => this._data[3] = (byte)value;
-    }
-
-    /// <summary>
-    /// Performs an implicit conversion from a Span of bytes to a <see cref="UpdateMiniGameState"/>.
-    /// </summary>
-    /// <param name="packet">The packet as span.</param>
-    /// <returns>The packet as struct.</returns>
-    public static implicit operator UpdateMiniGameStateRef(Span<byte> packet) => new (packet, false);
-
-    /// <summary>
-    /// Performs an implicit conversion from <see cref="UpdateMiniGameState"/> to a Span of bytes.
-    /// </summary>
-    /// <param name="packet">The packet as struct.</param>
-    /// <returns>The packet as byte span.</returns>
-    public static implicit operator Span<byte>(UpdateMiniGameStateRef packet) => packet._data; 
-}
-
-
-/// <summary>
-/// Is sent by the server when: A mini game ended and the score table is sent to the player.
-/// Causes reaction on client side: The score table is shown at the client.
-/// </summary>
-public readonly ref struct MiniGameScoreTableRef
-{
-    private readonly Span<byte> _data;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MiniGameScoreTableRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    public MiniGameScoreTableRef(Span<byte> data)
-        : this(data, true)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MiniGameScoreTableRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
-    private MiniGameScoreTableRef(Span<byte> data, bool initialize)
-    {
-        this._data = data;
-        if (initialize)
-        {
-            var header = this.Header;
-            header.Type = HeaderType;
-            header.Code = Code;
-            header.Length = (byte)data.Length;
-        }
-    }
-
-    /// <summary>
-    /// Gets the header type of this data packet.
-    /// </summary>
-    public static byte HeaderType => 0xC1;
-
-    /// <summary>
-    /// Gets the operation code of this data packet.
-    /// </summary>
-    public static byte Code => 0x93;
-
-    /// <summary>
-    /// Gets the header of this packet.
-    /// </summary>
-    public C1HeaderRef Header => new (this._data);
-
-    /// <summary>
-    /// Gets or sets the player rank.
-    /// </summary>
-    public byte PlayerRank
-    {
-        get => this._data[3];
-        set => this._data[3] = value;
-    }
-
-    /// <summary>
-    /// Gets or sets the result count.
-    /// </summary>
-    public byte ResultCount
-    {
-        get => this._data[4];
-        set => this._data[4] = value;
-    }
-
-    /// <summary>
-    /// Gets the <see cref="ResultItemRef"/> of the specified index.
-    /// </summary>
-        public ResultItemRef this[int index] => new (this._data[(5 + index * ResultItemRef.Length)..]);
-
-    /// <summary>
-    /// Performs an implicit conversion from a Span of bytes to a <see cref="MiniGameScoreTable"/>.
-    /// </summary>
-    /// <param name="packet">The packet as span.</param>
-    /// <returns>The packet as struct.</returns>
-    public static implicit operator MiniGameScoreTableRef(Span<byte> packet) => new (packet, false);
-
-    /// <summary>
-    /// Performs an implicit conversion from <see cref="MiniGameScoreTable"/> to a Span of bytes.
-    /// </summary>
-    /// <param name="packet">The packet as struct.</param>
-    /// <returns>The packet as byte span.</returns>
-    public static implicit operator Span<byte>(MiniGameScoreTableRef packet) => packet._data; 
-
-    /// <summary>
-    /// Calculates the size of the packet for the specified count of <see cref="ResultItemRef"/>.
-    /// </summary>
-    /// <param name="resultsCount">The count of <see cref="ResultItemRef"/> from which the size will be calculated.</param>
-        
-    public static int GetRequiredSize(int resultsCount) => resultsCount * ResultItemRef.Length + 5;
-
-
-/// <summary>
-/// The result of one player..
-/// </summary>
-public readonly ref struct ResultItemRef
-{
-    private readonly Span<byte> _data;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ResultItemRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    public ResultItemRef(Span<byte> data)
-    {
-        this._data = data;
-    }
-
-    /// <summary>
-    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
-    /// </summary>
-    public static int Length => 24;
-
-    /// <summary>
-    /// Gets or sets the player name.
-    /// </summary>
-    public string PlayerName
-    {
-        get => this._data.ExtractString(0, 10, System.Text.Encoding.UTF8);
-        set => this._data.Slice(0, 10).WriteString(value, System.Text.Encoding.UTF8);
-    }
-
-    /// <summary>
-    /// Gets or sets the total score.
-    /// </summary>
-    public uint TotalScore
-    {
-        get => ReadUInt32LittleEndian(this._data[12..]);
-        set => WriteUInt32LittleEndian(this._data[12..], value);
-    }
-
-    /// <summary>
-    /// Gets or sets the bonus experience.
-    /// </summary>
-    public uint BonusExperience
-    {
-        get => ReadUInt32LittleEndian(this._data[16..]);
-        set => WriteUInt32LittleEndian(this._data[16..], value);
-    }
-
-    /// <summary>
-    /// Gets or sets the bonus money.
-    /// </summary>
-    public uint BonusMoney
-    {
-        get => ReadUInt32LittleEndian(this._data[20..]);
-        set => WriteUInt32LittleEndian(this._data[20..], value);
-    }
-}
-}
-
-
-/// <summary>
-/// Is sent by the server when: The blood castle mini game ended and the score of the player is sent to the player.
-/// Causes reaction on client side: The score is shown at the client.
-/// </summary>
-public readonly ref struct BloodCastleScoreRef
-{
-    private readonly Span<byte> _data;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BloodCastleScoreRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    public BloodCastleScoreRef(Span<byte> data)
-        : this(data, true)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BloodCastleScoreRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
-    private BloodCastleScoreRef(Span<byte> data, bool initialize)
-    {
-        this._data = data;
-        if (initialize)
-        {
-            var header = this.Header;
-            header.Type = HeaderType;
-            header.Code = Code;
-            header.Length = (byte)Math.Min(data.Length, Length);
-            this.Type = 0xFF;
-        }
-    }
-
-    /// <summary>
-    /// Gets the header type of this data packet.
-    /// </summary>
-    public static byte HeaderType => 0xC1;
-
-    /// <summary>
-    /// Gets the operation code of this data packet.
-    /// </summary>
-    public static byte Code => 0x93;
-
-    /// <summary>
-    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
-    /// </summary>
-    public static int Length => 29;
-
-    /// <summary>
-    /// Gets the header of this packet.
-    /// </summary>
-    public C1HeaderRef Header => new (this._data);
-
-    /// <summary>
-    /// Gets or sets the success.
-    /// </summary>
-    public bool Success
-    {
-        get => this._data[3..].GetBoolean();
-        set => this._data[3..].SetBoolean(value);
-    }
-
-    /// <summary>
-    /// Gets or sets the type.
-    /// </summary>
-    public byte Type
-    {
-        get => this._data[4];
-        set => this._data[4] = value;
-    }
-
-    /// <summary>
-    /// Gets or sets the player name.
-    /// </summary>
-    public string PlayerName
-    {
-        get => this._data.ExtractString(5, 10, System.Text.Encoding.UTF8);
-        set => this._data.Slice(5, 10).WriteString(value, System.Text.Encoding.UTF8);
-    }
-
-    /// <summary>
-    /// Gets or sets the total score.
-    /// </summary>
-    public uint TotalScore
-    {
-        get => ReadUInt32LittleEndian(this._data[17..]);
-        set => WriteUInt32LittleEndian(this._data[17..], value);
-    }
-
-    /// <summary>
-    /// Gets or sets the bonus experience.
-    /// </summary>
-    public uint BonusExperience
-    {
-        get => ReadUInt32LittleEndian(this._data[21..]);
-        set => WriteUInt32LittleEndian(this._data[21..], value);
-    }
-
-    /// <summary>
-    /// Gets or sets the bonus money.
-    /// </summary>
-    public uint BonusMoney
-    {
-        get => ReadUInt32LittleEndian(this._data[25..]);
-        set => WriteUInt32LittleEndian(this._data[25..], value);
-    }
-
-    /// <summary>
-    /// Performs an implicit conversion from a Span of bytes to a <see cref="BloodCastleScore"/>.
-    /// </summary>
-    /// <param name="packet">The packet as span.</param>
-    /// <returns>The packet as struct.</returns>
-    public static implicit operator BloodCastleScoreRef(Span<byte> packet) => new (packet, false);
-
-    /// <summary>
-    /// Performs an implicit conversion from <see cref="BloodCastleScore"/> to a Span of bytes.
-    /// </summary>
-    /// <param name="packet">The packet as struct.</param>
-    /// <returns>The packet as byte span.</returns>
-    public static implicit operator Span<byte>(BloodCastleScoreRef packet) => packet._data; 
-}
-
-
-/// <summary>
-/// Is sent by the server when: The player requested to enter the blood castle mini game through the Archangel Messenger NPC.
-/// Causes reaction on client side: In case it failed, it shows the corresponding error message.
-/// </summary>
-public readonly ref struct BloodCastleEnterResultRef
-{
-    private readonly Span<byte> _data;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BloodCastleEnterResultRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    public BloodCastleEnterResultRef(Span<byte> data)
-        : this(data, true)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BloodCastleEnterResultRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
-    private BloodCastleEnterResultRef(Span<byte> data, bool initialize)
-    {
-        this._data = data;
-        if (initialize)
-        {
-            var header = this.Header;
-            header.Type = HeaderType;
-            header.Code = Code;
-            header.Length = (byte)Math.Min(data.Length, Length);
-        }
-    }
-
-    /// <summary>
-    /// Gets the header type of this data packet.
-    /// </summary>
-    public static byte HeaderType => 0xC1;
-
-    /// <summary>
-    /// Gets the operation code of this data packet.
-    /// </summary>
-    public static byte Code => 0x9A;
-
-    /// <summary>
-    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
-    /// </summary>
-    public static int Length => 4;
-
-    /// <summary>
-    /// Gets the header of this packet.
-    /// </summary>
-    public C1HeaderRef Header => new (this._data);
-
-    /// <summary>
-    /// Gets or sets the result.
-    /// </summary>
-    public BloodCastleEnterResult.EnterResult Result
-    {
-        get => (BloodCastleEnterResult.EnterResult)this._data[3];
-        set => this._data[3] = (byte)value;
-    }
-
-    /// <summary>
-    /// Performs an implicit conversion from a Span of bytes to a <see cref="BloodCastleEnterResult"/>.
-    /// </summary>
-    /// <param name="packet">The packet as span.</param>
-    /// <returns>The packet as struct.</returns>
-    public static implicit operator BloodCastleEnterResultRef(Span<byte> packet) => new (packet, false);
-
-    /// <summary>
-    /// Performs an implicit conversion from <see cref="BloodCastleEnterResult"/> to a Span of bytes.
-    /// </summary>
-    /// <param name="packet">The packet as struct.</param>
-    /// <returns>The packet as byte span.</returns>
-    public static implicit operator Span<byte>(BloodCastleEnterResultRef packet) => packet._data; 
-}
-
-
-/// <summary>
-/// Is sent by the server when: The state of a blood castle event is about to change.
-/// Causes reaction on client side: The client side shows a message about the changing state.
-/// </summary>
-public readonly ref struct BloodCastleStateRef
-{
-    private readonly Span<byte> _data;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BloodCastleStateRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    public BloodCastleStateRef(Span<byte> data)
-        : this(data, true)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BloodCastleStateRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
-    private BloodCastleStateRef(Span<byte> data, bool initialize)
-    {
-        this._data = data;
-        if (initialize)
-        {
-            var header = this.Header;
-            header.Type = HeaderType;
-            header.Code = Code;
-            header.Length = (byte)Math.Min(data.Length, Length);
-        }
-    }
-
-    /// <summary>
-    /// Gets the header type of this data packet.
-    /// </summary>
-    public static byte HeaderType => 0xC1;
-
-    /// <summary>
-    /// Gets the operation code of this data packet.
-    /// </summary>
-    public static byte Code => 0x9B;
-
-    /// <summary>
-    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
-    /// </summary>
-    public static int Length => 13;
-
-    /// <summary>
-    /// Gets the header of this packet.
-    /// </summary>
-    public C1HeaderRef Header => new (this._data);
-
-    /// <summary>
-    /// Gets or sets the state.
-    /// </summary>
-    public BloodCastleState.Status State
-    {
-        get => (BloodCastleState.Status)this._data[3];
-        set => this._data[3] = (byte)value;
-    }
-
-    /// <summary>
-    /// Gets or sets the remain second.
-    /// </summary>
-    public ushort RemainSecond
-    {
-        get => ReadUInt16LittleEndian(this._data[4..]);
-        set => WriteUInt16LittleEndian(this._data[4..], value);
-    }
-
-    /// <summary>
-    /// Gets or sets the max monster.
-    /// </summary>
-    public ushort MaxMonster
-    {
-        get => ReadUInt16LittleEndian(this._data[6..]);
-        set => WriteUInt16LittleEndian(this._data[6..], value);
-    }
-
-    /// <summary>
-    /// Gets or sets the cur monster.
-    /// </summary>
-    public ushort CurMonster
-    {
-        get => ReadUInt16LittleEndian(this._data[8..]);
-        set => WriteUInt16LittleEndian(this._data[8..], value);
-    }
-
-    /// <summary>
-    /// Gets or sets the item owner id.
-    /// </summary>
-    public ushort ItemOwnerId
-    {
-        get => ReadUInt16LittleEndian(this._data[10..]);
-        set => WriteUInt16LittleEndian(this._data[10..], value);
-    }
-
-    /// <summary>
-    /// Gets or sets the item level.
-    /// </summary>
-    public byte ItemLevel
-    {
-        get => this._data[12];
-        set => this._data[12] = value;
-    }
-
-    /// <summary>
-    /// Performs an implicit conversion from a Span of bytes to a <see cref="BloodCastleState"/>.
-    /// </summary>
-    /// <param name="packet">The packet as span.</param>
-    /// <returns>The packet as struct.</returns>
-    public static implicit operator BloodCastleStateRef(Span<byte> packet) => new (packet, false);
-
-    /// <summary>
-    /// Performs an implicit conversion from <see cref="BloodCastleState"/> to a Span of bytes.
-    /// </summary>
-    /// <param name="packet">The packet as struct.</param>
-    /// <returns>The packet as byte span.</returns>
-    public static implicit operator Span<byte>(BloodCastleStateRef packet) => packet._data; 
-}
-
-
-/// <summary>
-/// Is sent by the server when: The player requested to enter the chaos castle mini game by using the 'Armor of Guardsman' item.
-/// Causes reaction on client side: In case it failed, it shows the corresponding error message.
-/// </summary>
-public readonly ref struct ChaosCastleEnterResultRef
-{
-    private readonly Span<byte> _data;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ChaosCastleEnterResultRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    public ChaosCastleEnterResultRef(Span<byte> data)
-        : this(data, true)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ChaosCastleEnterResultRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
-    private ChaosCastleEnterResultRef(Span<byte> data, bool initialize)
-    {
-        this._data = data;
-        if (initialize)
-        {
-            var header = this.Header;
-            header.Type = HeaderType;
-            header.Code = Code;
-            header.Length = (byte)Math.Min(data.Length, Length);
-            header.SubCode = SubCode;
-        }
-    }
-
-    /// <summary>
-    /// Gets the header type of this data packet.
-    /// </summary>
-    public static byte HeaderType => 0xC1;
-
-    /// <summary>
-    /// Gets the operation code of this data packet.
-    /// </summary>
-    public static byte Code => 0xAF;
-
-    /// <summary>
-    /// Gets the operation sub-code of this data packet.
-    /// The <see cref="Code" /> is used as a grouping key.
-    /// </summary>
-    public static byte SubCode => 0x01;
-
-    /// <summary>
-    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
-    /// </summary>
-    public static int Length => 5;
-
-    /// <summary>
-    /// Gets the header of this packet.
-    /// </summary>
-    public C1HeaderWithSubCodeRef Header => new (this._data);
-
-    /// <summary>
-    /// Gets or sets the result.
-    /// </summary>
-    public ChaosCastleEnterResult.EnterResult Result
-    {
-        get => (ChaosCastleEnterResult.EnterResult)this._data[4];
-        set => this._data[4] = (byte)value;
-    }
-
-    /// <summary>
-    /// Performs an implicit conversion from a Span of bytes to a <see cref="ChaosCastleEnterResult"/>.
-    /// </summary>
-    /// <param name="packet">The packet as span.</param>
-    /// <returns>The packet as struct.</returns>
-    public static implicit operator ChaosCastleEnterResultRef(Span<byte> packet) => new (packet, false);
-
-    /// <summary>
-    /// Performs an implicit conversion from <see cref="ChaosCastleEnterResult"/> to a Span of bytes.
-    /// </summary>
-    /// <param name="packet">The packet as struct.</param>
-    /// <returns>The packet as byte span.</returns>
-    public static implicit operator Span<byte>(ChaosCastleEnterResultRef packet) => packet._data; 
-}
-
-
-/// <summary>
-/// Is sent by the server when: The state of event is about to change.
-/// Causes reaction on client side: The event's effect is shown.
-/// </summary>
-public readonly ref struct MapEventStateRef
-{
-    private readonly Span<byte> _data;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MapEventStateRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    public MapEventStateRef(Span<byte> data)
-        : this(data, true)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MapEventStateRef"/> struct.
-    /// </summary>
-    /// <param name="data">The underlying data.</param>
-    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
-    private MapEventStateRef(Span<byte> data, bool initialize)
-    {
-        this._data = data;
-        if (initialize)
-        {
-            var header = this.Header;
-            header.Type = HeaderType;
-            header.Code = Code;
-            header.Length = (byte)Math.Min(data.Length, Length);
-        }
-    }
-
-    /// <summary>
-    /// Gets the header type of this data packet.
-    /// </summary>
-    public static byte HeaderType => 0xC1;
-
-    /// <summary>
-    /// Gets the operation code of this data packet.
-    /// </summary>
-    public static byte Code => 0x0B;
-
-    /// <summary>
-    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
-    /// </summary>
-    public static int Length => 5;
-
-    /// <summary>
-    /// Gets the header of this packet.
-    /// </summary>
-    public C1HeaderRef Header => new (this._data);
-
-    /// <summary>
-    /// Gets or sets the enable.
-    /// </summary>
-    public bool Enable
-    {
-        get => this._data[3..].GetBoolean();
-        set => this._data[3..].SetBoolean(value);
-    }
-
-    /// <summary>
-    /// Gets or sets the event.
-    /// </summary>
-    public MapEventState.Events Event
-    {
-        get => (MapEventState.Events)this._data[4];
-        set => this._data[4] = (byte)value;
-    }
-
-    /// <summary>
-    /// Performs an implicit conversion from a Span of bytes to a <see cref="MapEventState"/>.
-    /// </summary>
-    /// <param name="packet">The packet as span.</param>
-    /// <returns>The packet as struct.</returns>
-    public static implicit operator MapEventStateRef(Span<byte> packet) => new (packet, false);
-
-    /// <summary>
-    /// Performs an implicit conversion from <see cref="MapEventState"/> to a Span of bytes.
-    /// </summary>
-    /// <param name="packet">The packet as struct.</param>
-    /// <returns>The packet as byte span.</returns>
-    public static implicit operator Span<byte>(MapEventStateRef packet) => packet._data; 
-}
-
-
-/// <summary>
 /// Is sent by the server when: Init cash shop.
 /// Causes reaction on client side: Cash shop is inited.
 /// </summary>
@@ -28818,4 +28083,739 @@ public readonly ref struct CashShopBannerRef
     /// <param name="packet">The packet as struct.</param>
     /// <returns>The packet as byte span.</returns>
     public static implicit operator Span<byte>(CashShopBannerRef packet) => packet._data; 
+}
+
+
+/// <summary>
+/// Is sent by the server when: The state of a mini game event is about to change in 30 seconds.
+/// Causes reaction on client side: The client side shows a message about the changing state.
+/// </summary>
+public readonly ref struct UpdateMiniGameStateRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UpdateMiniGameStateRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public UpdateMiniGameStateRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UpdateMiniGameStateRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private UpdateMiniGameStateRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0x92;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 4;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the state.
+    /// </summary>
+    public UpdateMiniGameState.MiniGameTypeState State
+    {
+        get => (UpdateMiniGameState.MiniGameTypeState)this._data[3];
+        set => this._data[3] = (byte)value;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="UpdateMiniGameState"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator UpdateMiniGameStateRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="UpdateMiniGameState"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(UpdateMiniGameStateRef packet) => packet._data; 
+}
+
+
+/// <summary>
+/// Is sent by the server when: A mini game ended and the score table is sent to the player.
+/// Causes reaction on client side: The score table is shown at the client.
+/// </summary>
+public readonly ref struct MiniGameScoreTableRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MiniGameScoreTableRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public MiniGameScoreTableRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MiniGameScoreTableRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private MiniGameScoreTableRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)data.Length;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0x93;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the player rank.
+    /// </summary>
+    public byte PlayerRank
+    {
+        get => this._data[3];
+        set => this._data[3] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the result count.
+    /// </summary>
+    public byte ResultCount
+    {
+        get => this._data[4];
+        set => this._data[4] = value;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="ResultItemRef"/> of the specified index.
+    /// </summary>
+        public ResultItemRef this[int index] => new (this._data[(5 + index * ResultItemRef.Length)..]);
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="MiniGameScoreTable"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator MiniGameScoreTableRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="MiniGameScoreTable"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(MiniGameScoreTableRef packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified count of <see cref="ResultItemRef"/>.
+    /// </summary>
+    /// <param name="resultsCount">The count of <see cref="ResultItemRef"/> from which the size will be calculated.</param>
+        
+    public static int GetRequiredSize(int resultsCount) => resultsCount * ResultItemRef.Length + 5;
+
+
+/// <summary>
+/// The result of one player..
+/// </summary>
+public readonly ref struct ResultItemRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResultItemRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public ResultItemRef(Span<byte> data)
+    {
+        this._data = data;
+    }
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 24;
+
+    /// <summary>
+    /// Gets or sets the player name.
+    /// </summary>
+    public string PlayerName
+    {
+        get => this._data.ExtractString(0, 10, System.Text.Encoding.UTF8);
+        set => this._data.Slice(0, 10).WriteString(value, System.Text.Encoding.UTF8);
+    }
+
+    /// <summary>
+    /// Gets or sets the total score.
+    /// </summary>
+    public uint TotalScore
+    {
+        get => ReadUInt32LittleEndian(this._data[12..]);
+        set => WriteUInt32LittleEndian(this._data[12..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the bonus experience.
+    /// </summary>
+    public uint BonusExperience
+    {
+        get => ReadUInt32LittleEndian(this._data[16..]);
+        set => WriteUInt32LittleEndian(this._data[16..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the bonus money.
+    /// </summary>
+    public uint BonusMoney
+    {
+        get => ReadUInt32LittleEndian(this._data[20..]);
+        set => WriteUInt32LittleEndian(this._data[20..], value);
+    }
+}
+}
+
+
+/// <summary>
+/// Is sent by the server when: The blood castle mini game ended and the score of the player is sent to the player.
+/// Causes reaction on client side: The score is shown at the client.
+/// </summary>
+public readonly ref struct BloodCastleScoreRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BloodCastleScoreRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public BloodCastleScoreRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BloodCastleScoreRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private BloodCastleScoreRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+            this.Type = 0xFF;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0x93;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 29;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the success.
+    /// </summary>
+    public bool Success
+    {
+        get => this._data[3..].GetBoolean();
+        set => this._data[3..].SetBoolean(value);
+    }
+
+    /// <summary>
+    /// Gets or sets the type.
+    /// </summary>
+    public byte Type
+    {
+        get => this._data[4];
+        set => this._data[4] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the player name.
+    /// </summary>
+    public string PlayerName
+    {
+        get => this._data.ExtractString(5, 10, System.Text.Encoding.UTF8);
+        set => this._data.Slice(5, 10).WriteString(value, System.Text.Encoding.UTF8);
+    }
+
+    /// <summary>
+    /// Gets or sets the total score.
+    /// </summary>
+    public uint TotalScore
+    {
+        get => ReadUInt32LittleEndian(this._data[17..]);
+        set => WriteUInt32LittleEndian(this._data[17..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the bonus experience.
+    /// </summary>
+    public uint BonusExperience
+    {
+        get => ReadUInt32LittleEndian(this._data[21..]);
+        set => WriteUInt32LittleEndian(this._data[21..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the bonus money.
+    /// </summary>
+    public uint BonusMoney
+    {
+        get => ReadUInt32LittleEndian(this._data[25..]);
+        set => WriteUInt32LittleEndian(this._data[25..], value);
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="BloodCastleScore"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator BloodCastleScoreRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="BloodCastleScore"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(BloodCastleScoreRef packet) => packet._data; 
+}
+
+
+/// <summary>
+/// Is sent by the server when: The player requested to enter the blood castle mini game through the Archangel Messenger NPC.
+/// Causes reaction on client side: In case it failed, it shows the corresponding error message.
+/// </summary>
+public readonly ref struct BloodCastleEnterResultRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BloodCastleEnterResultRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public BloodCastleEnterResultRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BloodCastleEnterResultRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private BloodCastleEnterResultRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0x9A;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 4;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the result.
+    /// </summary>
+    public BloodCastleEnterResult.EnterResult Result
+    {
+        get => (BloodCastleEnterResult.EnterResult)this._data[3];
+        set => this._data[3] = (byte)value;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="BloodCastleEnterResult"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator BloodCastleEnterResultRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="BloodCastleEnterResult"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(BloodCastleEnterResultRef packet) => packet._data; 
+}
+
+
+/// <summary>
+/// Is sent by the server when: The state of a blood castle event is about to change.
+/// Causes reaction on client side: The client side shows a message about the changing state.
+/// </summary>
+public readonly ref struct BloodCastleStateRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BloodCastleStateRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public BloodCastleStateRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BloodCastleStateRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private BloodCastleStateRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0x9B;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 13;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the state.
+    /// </summary>
+    public BloodCastleState.Status State
+    {
+        get => (BloodCastleState.Status)this._data[3];
+        set => this._data[3] = (byte)value;
+    }
+
+    /// <summary>
+    /// Gets or sets the remain second.
+    /// </summary>
+    public ushort RemainSecond
+    {
+        get => ReadUInt16LittleEndian(this._data[4..]);
+        set => WriteUInt16LittleEndian(this._data[4..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the max monster.
+    /// </summary>
+    public ushort MaxMonster
+    {
+        get => ReadUInt16LittleEndian(this._data[6..]);
+        set => WriteUInt16LittleEndian(this._data[6..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the cur monster.
+    /// </summary>
+    public ushort CurMonster
+    {
+        get => ReadUInt16LittleEndian(this._data[8..]);
+        set => WriteUInt16LittleEndian(this._data[8..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the item owner id.
+    /// </summary>
+    public ushort ItemOwnerId
+    {
+        get => ReadUInt16LittleEndian(this._data[10..]);
+        set => WriteUInt16LittleEndian(this._data[10..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the item level.
+    /// </summary>
+    public byte ItemLevel
+    {
+        get => this._data[12];
+        set => this._data[12] = value;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="BloodCastleState"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator BloodCastleStateRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="BloodCastleState"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(BloodCastleStateRef packet) => packet._data; 
+}
+
+
+/// <summary>
+/// Is sent by the server when: The player requested to enter the chaos castle mini game by using the 'Armor of Guardsman' item.
+/// Causes reaction on client side: In case it failed, it shows the corresponding error message.
+/// </summary>
+public readonly ref struct ChaosCastleEnterResultRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChaosCastleEnterResultRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public ChaosCastleEnterResultRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChaosCastleEnterResultRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private ChaosCastleEnterResultRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xAF;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x01;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 5;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderWithSubCodeRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the result.
+    /// </summary>
+    public ChaosCastleEnterResult.EnterResult Result
+    {
+        get => (ChaosCastleEnterResult.EnterResult)this._data[4];
+        set => this._data[4] = (byte)value;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="ChaosCastleEnterResult"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator ChaosCastleEnterResultRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="ChaosCastleEnterResult"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(ChaosCastleEnterResultRef packet) => packet._data; 
+}
+
+
+/// <summary>
+/// Is sent by the server when: The state of event is about to change.
+/// Causes reaction on client side: The event's effect is shown.
+/// </summary>
+public readonly ref struct MapEventStateRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MapEventStateRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public MapEventStateRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MapEventStateRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private MapEventStateRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0x0B;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 5;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the enable.
+    /// </summary>
+    public bool Enable
+    {
+        get => this._data[3..].GetBoolean();
+        set => this._data[3..].SetBoolean(value);
+    }
+
+    /// <summary>
+    /// Gets or sets the event.
+    /// </summary>
+    public MapEventState.Events Event
+    {
+        get => (MapEventState.Events)this._data[4];
+        set => this._data[4] = (byte)value;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="MapEventState"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator MapEventStateRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="MapEventState"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(MapEventStateRef packet) => packet._data; 
 }
