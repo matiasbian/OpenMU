@@ -10174,6 +10174,216 @@
       </Fields>
     </Packet>
     <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>00</SubCode>
+      <Name>CashShopInit</Name>
+      <Caption>Cash Shop - Init</Caption>
+      <Length>4</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>Init cash shop.</SentWhen>
+      <CausedReaction>Cash shop is inited.</CausedReaction>
+      <Fields />
+    </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>01</SubCode>
+      <Name>CashShopPoint</Name>
+      <Caption>Cash Shop - Point</Caption>
+      <Length>45</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>Get cash shop points.</SentWhen>
+      <CausedReaction>Got cash shop points.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>4</Index>
+          <Type>Byte</Type>
+          <Name>ViewType</Name>
+        </Field>
+        <Field>
+          <Index>5</Index>
+          <Type>Double</Type>
+          <Name>TotalCash</Name>
+        </Field>
+        <Field>
+          <Index>13</Index>
+          <Type>Double</Type>
+          <Name>CashCredit</Name>
+        </Field>
+        <Field>
+          <Index>21</Index>
+          <Type>Double</Type>
+          <Name>CashPrepaid</Name>
+        </Field>
+        <Field>
+          <Index>29</Index>
+          <Type>Double</Type>
+          <Name>TotalPoint</Name>
+        </Field>
+        <Field>
+          <Index>37</Index>
+          <Type>Double</Type>
+          <Name>TotalMileage</Name>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>02</SubCode>
+      <Name>CashShopOpen</Name>
+      <Caption>Cash Shop - Open</Caption>
+      <Length>5</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>Open cash shop.</SentWhen>
+      <CausedReaction>Cash shop is opened.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>4</Index>
+          <Type>Byte</Type>
+          <Name>Result</Name>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>06</SubCode>
+      <Name>CashShopStorage</Name>
+      <Caption>Cash Shop - Storage</Caption>
+      <Length>12</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>Get cash shop storage info.</SentWhen>
+      <CausedReaction>Got cash shop storage info.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>4</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>TotalItemCount</Name>
+        </Field>
+        <Field>
+          <Index>6</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>CurrentItemCount</Name>
+        </Field>
+        <Field>
+          <Index>8</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>PageIndex</Name>
+        </Field>
+        <Field>
+          <Index>10</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>TotalPage</Name>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>0C</SubCode>
+      <Name>CashShopScript</Name>
+      <Caption>Cash Shop - Script</Caption>
+      <Length>10</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>Set cash shop script version.</SentWhen>
+      <CausedReaction>Cash shop script version is set.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>4</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Zone</Name>
+        </Field>
+        <Field>
+          <Index>6</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Year</Name>
+        </Field>
+        <Field>
+          <Index>8</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>YearId</Name>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>0D</SubCode>
+      <Name>CashShopItem</Name>
+      <Caption>Cash Shop - Item</Caption>
+      <Length>33</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>Get cash shop storage items.</SentWhen>
+      <CausedReaction>Got cash shop storage items.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>4</Index>
+          <Type>IntegerLittleEndian</Type>
+          <Name>StorageIndex</Name>
+        </Field>
+        <Field>
+          <Index>8</Index>
+          <Type>IntegerLittleEndian</Type>
+          <Name>ItemSeq</Name>
+        </Field>
+        <Field>
+          <Index>12</Index>
+          <Type>IntegerLittleEndian</Type>
+          <Name>StorageGroupCode</Name>
+        </Field>
+        <Field>
+          <Index>16</Index>
+          <Type>IntegerLittleEndian</Type>
+          <Name>ProductSeq</Name>
+        </Field>
+        <Field>
+          <Index>20</Index>
+          <Type>IntegerLittleEndian</Type>
+          <Name>PriceSeq</Name>
+        </Field>
+        <Field>
+          <Index>24</Index>
+          <Type>Double</Type>
+          <Name>CashPoint</Name>
+        </Field>
+        <Field>
+          <Index>32</Index>
+          <Type>Byte</Type>
+          <Name>ItemType</Name>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>15</SubCode>
+      <Name>CashShopBanner</Name>
+      <Caption>Cash Shop - Banner</Caption>
+      <Length>10</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>Set cash shop banner version.</SentWhen>
+      <CausedReaction>Cash shop banner version is set.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>4</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Zone</Name>
+        </Field>
+        <Field>
+          <Index>6</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Year</Name>
+        </Field>
+        <Field>
+          <Index>8</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>YearId</Name>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
       <HeaderType>C1Header</HeaderType>
       <Code>92</Code>
       <Name>UpdateMiniGameState</Name>

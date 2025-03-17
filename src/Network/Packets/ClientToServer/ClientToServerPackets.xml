@@ -4252,6 +4252,60 @@
       </Fields>
     </Packet>
   </Packets>
+  <Packet>
+    <HeaderType>C1HeaderWithSubCode</HeaderType>
+    <Code>D2</Code>
+    <SubCode>01</SubCode>
+    <Name>CashShopPoint</Name>
+    <Caption>Cash Shop - Point</Caption>
+    <Length>4</Length>
+    <Direction>ClientToServer</Direction>
+    <SentWhen>Get cash shop points.</SentWhen>
+    <CausedReaction>Got cash shop points.</CausedReaction>
+    <Fields />
+  </Packet>
+  <Packet>
+    <HeaderType>C1HeaderWithSubCode</HeaderType>
+    <Code>D2</Code>
+    <SubCode>02</SubCode>
+    <Name>CashShopOpen</Name>
+    <Caption>Cash Shop - Open</Caption>
+    <Length>4</Length>
+    <Direction>ClientToServer</Direction>
+    <SentWhen>The player wants to open cash shop.</SentWhen>
+    <CausedReaction>The cash shop is opened.</CausedReaction>
+    <Fields />
+  </Packet>
+  <Packet>
+    <HeaderType>C1HeaderWithSubCode</HeaderType>
+    <Code>D2</Code>
+    <SubCode>05</SubCode>
+    <Name>CashShopStorage</Name>
+    <Caption>Cash Shop - Storage</Caption>
+    <Length>10</Length>
+    <Direction>ClientToServer</Direction>
+    <SentWhen>Get cash shop storage info.</SentWhen>
+    <CausedReaction>Got cash shop storage info.</CausedReaction>
+    <Fields>
+      <Field>
+        <Index>4</Index>
+        <Type>IntegerLittleEndian</Type>
+        <Name>Page</Name>
+      </Field>
+      <Field>
+        <Index>8</Index>
+        <Type>Enum</Type>
+        <TypeName>CashShopStorageType</TypeName>
+        <Name>StorageType</Name>
+      </Field>
+      <Field>
+        <Index>9</Index>
+        <Type>Byte</Type>
+        <Name>Unk</Name>
+      </Field>
+    </Fields>
+  </Packet>
+  </Packets>
   <Enums>
     <Enum>
       <Name>TradeButtonState</Name>
@@ -4354,6 +4408,27 @@
           <Name>AttackTarget</Name>
           <Description>The pet attacks a specific target until it's dead.</Description>
           <Value>3</Value>
+        </EnumValue>
+      </Values>
+    </Enum>
+    <Enum>
+      <Name>CashShopStorageType</Name>
+      <Description>Describes the type of cash shop storage.</Description>
+      <Values>
+        <EnumValue>
+          <Name>SafeKeeping</Name>
+          <Description>Safe keeping type.</Description>
+          <Value>83</Value>
+        </EnumValue>
+        <EnumValue>
+          <Name>PresentBox</Name>
+          <Description>Present box type.</Description>
+          <Value>71</Value>
+        </EnumValue>
+        <EnumValue>
+          <Name>Total</Name>
+          <Description>Total type.</Description>
+          <Value>90</Value>
         </EnumValue>
       </Values>
     </Enum>
